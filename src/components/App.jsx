@@ -15,15 +15,15 @@ const App = () => {
   const [filter, setFilter] = useState('');
 
   // eslint-disable-next-line
-  useEffect(() => {
-    const localData = localStorage.getItem('contacts');
-    if (localData) {
-      setContacts(JSON.parse(localData));
-      Notiflix.Notify.info(`you have ${JSON.parse(localData).length} contacts`);
-    } else {
-      localStorage.setItem('contacts', JSON.stringify(contacts));
-    }
-  }, []);
+  // useEffect(() => {
+  //   const localData = localStorage.getItem('contacts');
+  //   if (localData) {
+  //     setContacts(JSON.parse(localData));
+  //     Notiflix.Notify.info(`you have ${JSON.parse(localData).length} contacts`);
+  //   } else {
+  //     localStorage.setItem('contacts', JSON.stringify(contacts));
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (prevContactsLength.current !== contacts.length) {
