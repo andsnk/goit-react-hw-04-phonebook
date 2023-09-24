@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { nanoid } from 'nanoid';
 import Notiflix from 'notiflix';
 import css from './ContactForm.module.css';
@@ -9,78 +9,79 @@ Notiflix.Notify.init({
   opacity: 1,
 });
 
-export default class PhonebookForm extends Component {
-  state = {
-    name: '',
-    number: '',
+const ContactForm = ({ contacts, onSubmit }) => {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+
+  const handleChange = e => {
+    const { name, value } = e.currentTarget;
+    switch (name) {
+      case 'name':
+        setName(value);
+        break;
+      case 'number':
+        setNumber(value);
+        break;
+      default:
+    }
   };
 
-  handleChange = e => {
-    this.setState({ [e.currentTarget.name]: e.currentTarget.value });
-  };
-
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
-    const isDuplicate = this.props.contacts.some(
-      contact => contact.name.toLowerCase() === this.state.name.toLowerCase()
+    const isDuplicate = contacts.some(
+      contact => contact.name.toLowerCase() === name.toLowerCase()
     );
 
     if (isDuplicate) {
-      Notiflix.Notify.failure(
-        `${this.state.name} is already in your contacts.`
-      );
-      this.setState({
-        name: '',
-        number: '',
-      });
+      Notiflix.Notify.failure(`${name} is already in your contacts.`);
+      setName('');
+      setNumber('');
       return;
     }
 
-    this.props.onSubmit({ ...this.state, id: nanoid(5) });
-    this.setState({
-      name: '',
-      number: '',
-    });
-    Notiflix.Notify.success(`${this.state.name} added to your contacts.`);
+    onSubmit({ name, number, id: nanoid(5) });
+    setName('');
+    setNumber('');
+    Notiflix.Notify.success(`${name} added to your contacts.`);
   };
 
-  render() {
-    return (
-      <div>
-        <form className={css.form} onSubmit={this.handleSubmit}>
-          <label className={css.label} htmlFor="name">
-            Name
-          </label>
-          <input
-            className={css.input}
-            onChange={this.handleChange}
-            id="name"
-            type="text"
-            name="name"
-            value={this.state.name}
-            pattern="^[a-zA-Zа-яА-Я]+(([' \-][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-            title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-            required
-          />
-          <label className={css.label} htmlFor="number">
-            Number
-          </label>
-          <input
-            className={css.input}
-            onChange={this.handleChange}
-            id="number"
-            type="tel"
-            name="number"
-            value={this.state.number}
-            pattern="\+?\d{1,4}?[ .\-\s]?\(?\d{1,3}?\)?[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,9}"
-            title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-            required
-          />
-          <button className={css.addBtn} type="submit">
-            Add contact
-          </button>
-        </form>
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <form className={css.form} onSubmit={handleSubmit}>
+        <label className={css.label} htmlFor="name">
+          Name
+        </label>
+        <input
+          className={css.input}
+          onChange={handleChange}
+          id="name"
+          type="text"
+          name="name"
+          value={name}
+          pattern="^[a-zA-Zа-яА-Я]+(([' \-][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+          title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+          required
+        />
+        <label className={css.label} htmlFor="number">
+          Number
+        </label>
+        <input
+          className={css.input}
+          onChange={handleChange}
+          id="number"
+          type="tel"
+          name="number"
+          value={number}
+          pattern="\+?\d{1,4}?[ .\-\s]?\(?\d{1,3}?\)?[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,9}"
+          title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
+          required
+        />
+        <button className={css.addBtn} type="submit">
+          Add contact
+        </button>
+      </form>
+    </div>
+  );
+};
+
+export default ContactForm;
