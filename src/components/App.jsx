@@ -14,6 +14,7 @@ const App = () => {
   const prevContactsLength = useRef(contacts.length);
   const [filter, setFilter] = useState('');
 
+  // eslint-disable-next-line
   useEffect(() => {
     const localData = localStorage.getItem('contacts');
     if (localData) {
